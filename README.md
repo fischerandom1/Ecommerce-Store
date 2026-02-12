@@ -1,2 +1,5 @@
-# Dynamic-AI-Inference-App
-Streamline your AI deployment. Upload and launch your models instantly with a single click
+# My First Full Stack Development 203]23
+
+A basic full-stack application exploring the connection between a **JAX** backend and a **JavaScript** frontend.
+
+---

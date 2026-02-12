@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!--bootstrap icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="../css/reset.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/feedback.css" />
+</head>
+<body>
+    <header>
+        <div class="bg_img"><h1 class="text-uppercase p-2 text-center">FEEDBACK Survey</h1></div>
+        <nav class="navbar mb-0 navbar-expand-lg navbar-light bg-light bg_color">
+            <div class="container">
+              <a href="#" class="navbar-brand">
+                <img
+                  src="../imgs/logo.png"
+                  class="d-inline-block align-top"
+                  alt="logo"
+                />
+              </a>
+              <button
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarNav"
+                class="navbar-toggler"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon float-right"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mb-1 ml-auto">
+                  <li class="nav-item active">
+                    <a href="../html/index.html" class="nav-link px-3">Home</a>
+                  </li>
+                  <li class="nav-item active">
+                    <a href="../html/about.html" class="nav-link px-3">About</a>
+                  </li>
+                  <li class="nav-item active">
+                    <a href="../html/pastexp.html" class="nav-link px-3"
+                      >Past&nbsp;Experience</a
+                    >
+                  </li>
+                  <li class="nav-item active">
+                    <a href="../html/sp.html" class="nav-link px-3">SP</a>
+                  </li>
+                  <li class="nav-item active">
+                    <a href="../html/DAAA.html" class="nav-link px-3">DAAA </a>
+                  </li>
+                  <li class="nav-item active">
+                    <a href="../html/feedback.html" class="nav-link px-3">Feedback </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+      </header>
+      <form class="container row mx-auto pt-4">
+        <div class = "form-outline col-4 col-md-2">
+         <label class="form-label" for="designation">Name</label>
+         <select class="form-control" id="designation">
+            
+             <option>Mr</option>
+             <option>Mrs</option>
+             <option>Dr</option>
+           </select>
+        </div>
+         <!-- Name input -->
+         <div class="form-outline col-6">
+             <label class="form-label" for="name">Name</label>
+             <input type="text" id="name" class="form-control" placeholder="John Tan Ming Long" required>
+         </div>
+         <!-- Gender input -->
+         <div class="form-group col-md-4">
+             <label for="gender">Gender</label>
+             <select class="form-control" id="gender" required>
+                <option value="">Choose</option>
+                 <option>I do not wish to say</option>
+                 <option>Male</option>
+                 <option>Female</option>
+                 <option>Others</option>
+             </select>
+         </div>
+         <div class="form-group col-6">
+             <label for="age">Age</label>
+             <select class="form-control" id="age" required>
+                <option value="">Choose</option>
+                 <option>I do not wish to say</option>
+                 <option>Below 21</option>
+                 <option>21 to 45</option>
+                 <option>45 to 65</option>
+                 <option>Above 65</option>
+             </select>
+         </div>
+
+         <!-- Calendar Control -->
+         <div class="form-group col-md-5 col-12">
+             <label for="date">Completion Date</label>
+             <input type="date" id="date" class="form-control" name="date">
+         </div>
+
+         <!-- Email input -->
+         <div class="form-outline col-6">
+             <label class="form-label" for="email">Email</label>
+             <input type="email" id="email" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" placeholder="contactus@sp.edu.sg" >
+         </div>
+
+         <!-- Phone number input -->
+         <div class="form-outline col-md-4">
+             <label class="form-label" for="phoneNumber">Phone number</label>
+             <input type="text" id="phoneNumber" pattern = "^[0-9]{8}$" class="form-control" placeholder="98989898" >
+         </div>
+         <!-- Age input -->
+         
+         <!-- User's Role -->
+         <div class="form-group col-6">
+             <label for="role">How did u come across this website</label>
+             <select class="form-control" id="role">
+                 <option>I do not wish to say</option>
+                 <option>type wrongly</option>
+                 <option>marking assignment</option>
+                 <option>stole your computer</option>
+                 <option>Parent of Student</option>
+                 <option>Others</option>
+             </select>
+         </div>
+     
+
+         <div class = "form-group col-12">
+             <label class="form-label" for="feedbacklong">Message</label>
+             <textarea class="form-control" id="feedbacklong" rows="4"></textarea>
+             
+         </div>
+         
+         <div><button type="submit" class="btn btn-primary">Submit</button></div>
+    </form>
+    
+</div>
+<footer class = "bg-dark text-light">
+    <p class = "text-center">
+      <a class = "px-3" href="mailto:webmaster@example.com">yuwei201640@gmail.com</a>
+      copyright &copy;2021, designed by yuwei
+        Instagram: <a class = "px-3" href="https://www.instagram.com/fischerandom/">fischerandom</a>
+    </p>
+
+</footer>
+</body>

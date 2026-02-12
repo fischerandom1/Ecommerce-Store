@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="./css/index.css" rel="stylesheet" />
+    <link
+    rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script>
+        
+        //function for creating stars
+        function stars(rating){
+            console.log(rating)
+            if(rating == null){
+                return "No Rating Available"
+            }
+            var rating = Math.round(rating/0.5)*0.5;
+            stars_html = ''
+            for(var i = 0 ;i <5;i++){
+                if(rating > i ){
+                    if(rating-i < 1){
+                        stars_html += `<i class = "fa fa-star-half-o" style = "font-size:150%;color:rgb(255, 187, 0)"></i>`
+                    }else{
+                        stars_html += `<i class = "fa fa-star checked" style = "font-size:150%;color:rgb(255, 187, 0)"></i>`
+                    }
+                    
+                }else{
+                    stars_html += `<i class = "fa fa-star-o" style = "font-size:150%;color:rgb(255, 187, 0)"></i>`
+                }
+            }
+            
+            return stars_html
+            //returns the html for stars
+        };
+
+
+        $(document).ready(function(){
+
+            //variables 
+            var $user_options = $('#user_options');
+            var $top_rated = $('#top_rated');
+
+
+            //check if user have logged in to display different options
+            console.log(localStorage.length)
+            if(localStorage.length != 0){
+                $user_options.html(`<ul class="navbar-nav ml-auto">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="http://localhost:3001/profile.html">Profile</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#">Cart</a>
+                                        </li>
+
+                                    </ul>`)
+            }
+
+
+            //load recommended items 
+            $.ajax({
+                    type:"GET",
+                    url:`http://localhost:8081/top3rated`, 
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",  
+                    success:function(data, textStatus, xhr){
+                        console.log("ok")
+                        console.log(data)
+                        if (data.length == 0){
+                            document.getElementById("top_rated").innerHTML = "No products is found"
+                        }else{
+                            console.log(data)
+                            var inner_html = ''
+                            $.each(data,function(i,data){
+                                console.log(data.image)
+                                if( data.image == null){
+                                    var image_path = "http://localhost:8081/not_found.jpg"
+                                }else{
+                                    var image_path = `http://localhost:8081/${data.image}`
+                                }
+
+                                
+
+
+
+                                inner_html += `<div class="col-md-4 border border-secondary">
+                                                <div class="thumbnail justify-content-center" align="center">
+                                                    <img src="${image_path}" alt="Lights" class = "img-fluid" style="height:200px; width:230px;">
+                                                    <div class="caption">
+                                                        <h5 class="card-title">${data.name}</h5>
+                                                        <p><b>Rating : </b>${stars(data.avgrating)}</p>
+                                                        <p>${data.description}</p>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary" id = "${data.productid}">Primary</button>
+                                                    </a>
+                                                </div>
+                                                </div>
+                            `
+                            
+                        })
+                        document.getElementById("top_rated").innerHTML = inner_html
+                        }
+                        
+                    },
+                    error: function (xhr, textStatus, errorThrown){
+                        console.log("error in operation")
+                    }
+                });
+
+                $top_rated.on( "click","button", function(){
+                    window.location.assign(`http://localhost:3001/product.html?productid=${$(this).attr('id')}`);
+                } );
+            
+
+        })
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#">Navbar</a>
+      
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="http://localhost:3001/products.html">Products</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+
+          </ul>
+        </div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2" id = "user_options">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:3001/login.html">Login</a>
+                </li>
+            </ul>
+        </div>
+      </nav>
+    
+</body>
+    <div class = "bg" style="width: 100%;height: 92%;">
+        <div class = "front_title" style = "display:inline-block">
+            <h1>WELCOME TO SP&nbsp;IT!</h1>
+            
+        </div></div>
+        <div class="container">
+            
+            <div class="row py-5">
+                <h2 class = "h2 d-inline-flex mx-auto" >Top Rated Products</h2>
+            </div>
+            <div class="row" id = "top_rated">
+
+            </div>
+            <div class="row py-5">
+                <h2 class = "h2 d-inline-flex mx-auto" >Discounted Product</h2>
+            </div>  
+            <div class="row" id = "discounted">
+
+            </div>
+        </div>
+    
+</html>

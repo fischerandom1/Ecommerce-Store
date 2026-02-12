@@ -1,0 +1,152 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="css/profile.css" rel="stylesheet" />
+        <Title>User Profile</Title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+        <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+        <script>  
+                 $(document).ready(function () {  
+                    //check if it's admin 
+                    var userdata = JSON.parse(localStorage.getItem("userInfo"));
+                    if(userdata.length == 1 && userdata[0].type == "Admin"){
+                        console.log(document.getElementById("options").innerHTML = document.getElementById("options").innerHTML+`<p><input type="button" onclick="location.href='http://localhost:3001/admin.html';"id="manageProduct" value="ManageProduct" /></p>`)
+                    }else{
+                        console.log("no ok")
+                    }
+                    //console.log(document.getElementById("profile"))
+                     $("#Update").click(function () {  
+                        var userid = JSON.parse(localStorage.getItem("userInfo"))[0].userid
+                        var tmpUName = $('#username').val();
+                        var tmpEmail = $('#email').val();
+                        var tmpprofile_pic_url = $('#profile_pic_url').val();
+                        var contact = $('#contact').val()
+                        var tmpToken = localStorage.getItem('token');
+                        console.log(userid)
+                        var data = `{"username":"${tmpUName}", "email":"${tmpEmail}", "profile_pic_url":"${tmpprofile_pic_url}", "contact":"${contact}"}`
+                        //var data = "{\"username\":\""+tmpUName+"\", \"email\":\""+tmpEmail+"\", \"profile_pic_url\":\""+tmpprofile_pic_url+"\"}"; 
+                        console.log(data)
+                         $.ajax({   
+                             headers: {'authorization': 'Bearer '+tmpToken},     
+                             url: `http://localhost:8081/users/${userid}/`, 
+                             type: 'PUT',
+                             data: data,  
+                             contentType: "application/json; charset=utf-8",
+                             dataType: 'json',  
+                             success: function (data, textStatus, xhr) {
+                                 console.log(textStatus)
+                                 if (textStatus == "success"){  
+                                    
+                                    alert("Record updated successfully!")
+                                    //update localstorage
+                                    console.table(JSON.parse(localStorage.getItem("userInfo")))
+                                    update_storage = JSON.parse(localStorage.getItem("userInfo"))
+                                    update_storage[0].username = tmpUName;
+                                    update_storage[0].email = tmpEmail;
+                                    update_storage[0].profile_pic_url = tmpprofile_pic_url;
+                                    update_storage[0].contact = contact;
+                                    localStorage.setItem("userInfo",JSON.stringify(update_storage));
+                                    window.location.reload();   
+                                    
+
+                                 } else {
+                                     console.log("Error");
+                                 }                           
+                             },  
+                             error: function (xhr, textStatus, errorThrown) {  
+                                 console.log(xhr)
+                                 console.log(errorThrown)
+                                 console.log('Error in Operation');  
+                             }  
+                         });  
+                     });  
+
+                     $("#Logout").click(function () {
+                                    window.localStorage.clear();
+                                    window.location.assign("http://localhost:3001");
+                     });
+                     
+
+                 });  
+            </script> 
+
+    </head>
+    <body>
+        <div class="container">
+            <nav class="navbar navbar-expand-md navbar-light bg-light">
+                <a class="navbar-brand" href="http://localhost:3001/">Navbar</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+              
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                  <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="http://localhost:3001/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+                  </ul>
+                </div>
+              </nav>
+            
+        </div>        
+            <div class="card" id = "profile">
+                    <img src="http://localhost:8081/not_found.jpg" id="profilepic" alt="Profile" style="width:100%">
+                    <p class="username"> <label>Username: </label>
+                        <input type="text" id="username"> </br></p>
+                    <p class="profile_pic_url"><label>profilepic :</label>
+                        <input type="text" id="profile_pic_url"> </br></p>
+                    <p class="email"><label>Email: </label>
+                        <input type="text" id="email"> </p>
+                    <p class="contacts"><label>Contacts: </label>
+                        <input type="text" id="contact"> </p>   
+                        
+                        
+                    <p><span id="msg"></span></p>
+                    <div id = "options">
+                        <p><input type="button" id="Update" value="Update Profile" /></p>
+                        <p><input type="button" id="Logout" value="Log Out" /></p>
+                    </div>
+                    
+                  </div>
+                  <script>
+                    
+                    var userData = localStorage.getItem('userInfo');
+                    if(userData == null){
+                        window.location.assign(`http://localhost:3001/login.html`);
+                        alert("You have not logged in yet")
+                        
+                    }
+                    var userJsonData = JSON.parse(userData);
+                    console.log(userJsonData)
+                    var username = userJsonData[0].username;
+                    var useremail = userJsonData[0].email;
+                    var userpic = userJsonData[0].profile_pic_url;
+                    console.log(userpic)
+                    var contacts = userJsonData[0].contact;
+                    document.getElementById("username").value = username; 
+                    document.getElementById("email").value = useremail; 
+                    document.getElementById("profile_pic_url").value = userpic; 
+                    document.getElementById("contact").value = contacts; 
+                    if(userpic == null){
+                        document.getElementById("profilepic").src = "http://localhost:8081/not_found.jpg";
+                    }else{
+                        document.getElementById("profilepic").src = userpic;
+                    }
+                   
+                </script>
+        
+            </body>
+        </html>
+        

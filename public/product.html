@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/product.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <title>product</title>
+    <script>
+                //function for creating stars
+                function stars(rating){
+            console.log(rating)
+            if(rating == null){
+                return "No Rating Available"
+            }
+            var rating = Math.round(rating/0.5)*0.5;
+            stars_html = ''
+            for(var i = 0 ;i <5;i++){
+                if(rating > i ){
+                    if(rating-i < 1){
+                        stars_html += `<i class = "fa fa-star-half-o" style = "font-size:150%;color:rgb(255, 187, 0)"></i>`
+                    }else{
+                        stars_html += `<i class = "fa fa-star checked" style = "font-size:150%;color:rgb(255, 187, 0)"></i>`
+                    }
+                    
+                }else{
+                    stars_html += `<i class = "fa fa-star-o" style = "font-size:150%;color:rgb(255, 187, 0)"></i>`
+                }
+            }
+            
+            return stars_html
+            //returns the html for stars
+        };
+        $(document).ready(function(){
+            
+
+            
+            var $products = $('#product');
+            
+                const queryString = window.location.search;
+                console.log(queryString);
+                const urlParams = new URLSearchParams(queryString);
+                const productid = urlParams.get('productid')
+                console.log('productid : = '+productid)
+                
+                //checking if user have logged in
+
+                $.ajax({
+                    type:"GET",
+                    url: `http://localhost:8081/product/${productid}`,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json", 
+                    success:function(data, textStatus, xhr){
+                        console.log(xhr)
+                        console.log(productid)
+                        console.log(data)
+                        console.log("ok")
+                        if (data.length == 0){
+                            document.getElementById("product").innerHTML = "No products is found"
+                        }else{
+                            var inner_html = ''
+                            console.log(data.image)
+                            if( data.image == null){
+                                var image_path = "http://localhost:8081/not_found.jpg"
+                            }else{
+                                var image_path = `http://localhost:8081/${data.image}`
+                            }
+                            console.log(data)
+                                //<a href="="${image_path}" target="_blank">
+                                inner_html = `<div class="col-lg-6">
+                                                  <img class = "pt-lg-4 img-fluid" src = "${image_path}">
+                                            </div>
+                                            <div class="col-lg-6">
+                                                    <h2>${data.name}</h2>
+                                                    <p>product code : ${data.productid}</p>
+                                                    <p>${data.description}</p>
+                                                    <p class = "price">SGD $${data.price}</p>
+                                                    <p><b>Category:</b>${data.categoryname}</p>
+                                                    <p><b>Brand:</b>${data.brand}</p>
+                                                    <p><b>Rating : </b>${stars(data.avgrating)}</p>
+                                                    <input type="text" value = "1">
+                                                    <button type="button" class="btn btn-primary btn-sm mb-1">Primary</button>
+                                            </div>
+                                        </div>
+                            `
+                            
+                        
+                        document.getElementById("product").innerHTML = inner_html
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown){
+                        console.log("error in operation")
+                    }
+                });
+                
+                
+
+                $.ajax({
+                    type:"GET",
+                    url: `http://localhost:8081/product/${productid}/reviews`,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json", 
+                    success:function(data, textStatus, xhr){
+                        console.log("ok123")
+                        if (data.length == 0){
+                            document.getElementById("reviews").innerHTML = "No reviews is found"
+                        }else{
+                            var inner_html = ''
+                            $.each(data,function(i,data){   
+                                inner_html +=`<div class="col-lg-6">
+                                    <h2>${data.username}</h2>
+                                    <p>${data.created_at}</p>
+                                    <p>rating : ${data.rating}</p>
+                                    <p>comments : ${data.review}</p>
+                                    </div>`
+                            })
+
+                        document.getElementById("reviews").innerHTML = inner_html
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown){
+                        console.log("error in operation")
+                    }
+                });
+
+            
+            // Check Radio-box
+            let userRating = 0;
+            $(".rating input:radio").attr("checked", false);
+            $('.rating input').click(function () {
+            $(".rating span").removeClass('checked');
+            $(this).parent().addClass('checked');
+            });
+            $('input:radio').change(
+            function(){
+                userRating = this.value;
+                console.log(userRating);
+            }); 
+
+            //collect review and rating
+            //check if button clicked
+            $("#reviewsubmit").click(function(){
+                var rating=userRating;
+                if(rating == 0){
+                    alert("pls enter a rating ")
+                    return
+                }
+                var form=$('#reviewform').val();
+                var userdata = JSON.parse(localStorage.getItem("userInfo"));
+                console.log(userdata[0])
+                var data = `{"userid":"${userdata[0].userid}","rating":"${rating}","review":"${form}"}`
+                console.log(data)
+                $.ajax({
+                    type:"POST",
+                    url: `http://localhost:8081/product/${productid}/review/`,
+                    data:data,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success:function(data, textStatus, xhr){
+                        window.location.reload();
+                    },
+                    error: function (xhr, textStatus, errorThrown){
+                        console.log("error in operation")
+                    }
+                })
+                return false;
+            })
+
+
+            
+            
+        });
+    </script>
+</head>
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="http://localhost:3001/">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="http://localhost:3001/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    
+</div>
+<body>
+    
+    <h1 class = "text-center mt-5"><strong style = "color:red">SP</strong> IT ! </h1>
+    <div class="container">
+        <div class="row" id = "product">
+
+        </div>
+        <label class = "row pl-3 pt-5" for="ratingdiv">Rating</label>
+        <div id = "add_comment">
+        <div class="rating pt-3" id = "ratingdiv">
+            
+            <span><input type="radio" name="rating" id="str5" value="5"><label for="str5"></label></span>
+            <span><input type="radio" name="rating" id="str4" value="4"><label for="str4"></label></span>
+            <span><input type="radio" name="rating" id="str3" value="3"><label for="str3"></label></span>
+            <span><input type="radio" name="rating" id="str2" value="2"><label for="str2"></label></span>
+            <span><input type="radio" name="rating" id="str1" value="1"><label for="str1"></label></span>
+        </div>
+        <div class="form-group pt-2">
+            <label for="reviewform">Comments</label>
+            <textarea class="form-control" id="reviewform" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" id = "reviewsubmit">Submit</button>
+        </div>
+        <div class="row pt-5" id = "reviews">
+            
+        </div>
+
+            
+    </div>
+    
+</body>
+</html>

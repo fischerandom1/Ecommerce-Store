@@ -1,0 +1,86 @@
+/*GENERAL STYLE OF THE WEBSITE */
+
+h1,h2,h3,h4,h5,h6 {
+    font-weight: 500;
+  }
+
+html, body, form, main {
+    height: 100%;
+}
+body {
+    font-family: 'Roboto', sans-serif;
+    overflow-x: hidden;
+    background: rgb(236,255,255);
+    background:linear-gradient(to right,rgb(236,255,255),lightblue );
+  }
+/*header bg image and style*/   
+.front_title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    font-size: 50px;
+
+}
+
+header{
+    
+    width: 100%;
+    height: 80%;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+
+/*background images for index*/
+.bg {
+    /* The image used */
+    background-image: url("http://localhost:3001/images/index_img.jpg");
+    /* Full height */
+    width:100%; height:100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+
+/*adding styles into the heading for only front page*/
+.front_title h1{
+    
+    font-size: 50px;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+/*typing animation for index.html */
+@media (min-width: 768px) {
+
+    .front_title h1
+    {
+        overflow: hidden; /* Ensures the content is not revealed until the animation */
+        border-right: .15em solid rgb(0, 255, 0); 
+        white-space: nowrap; 
+        margin: 0 auto; 
+
+        animation: 
+            typing 3.5s steps(40, end),
+            blink-caret .75s step-end infinite;
+
+        background: none;
+        
+        font-size: 100px;
+        text-shadow: 2px 2px 4px #000000;
+        color: white;
+    }
+
+    /* The typing effect */
+    @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+    }
+    
+    /* The typewriter cursor effect */
+    @keyframes blink-caret {
+        from, to { border-color: transparent }
+        50% { border-color: rgb(0, 255, 0); }
+    }
+}

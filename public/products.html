@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>product</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script>
+        //function for creating stars
+        function stars(rating){
+            console.log(rating)
+            if(rating == null){
+                return "No Rating Available"
+            }
+            var rating = Math.round(rating/0.5)*0.5;
+            stars_html = ''
+            for(var i = 0 ;i <5;i++){
+                if(rating > i ){
+                    if(rating-i < 1){
+                        stars_html += `<i class = "fa fa-star-half-o" style = "font-size:150%;color:rgb(255, 187, 0)"></i>`
+                    }else{
+                        stars_html += `<i class = "fa fa-star checked" style = "font-size:150%;color:rgb(255, 187, 0)"></i>`
+                    }
+                    
+                }else{
+                    stars_html += `<i class = "fa fa-star-o" style = "font-size:150%;color:rgb(255, 187, 0)"></i>`
+                }
+            }
+            
+            return stars_html
+            //returns the html for stars
+        };
+
+
+        $(document).ready(function(){
+
+                var $products = $('#products');
+                var $productsearch = $('#productsearch');
+                var $searchtype = $('#searchtype');
+
+
+                $.ajax({
+                    type:"GET",
+                    url:"http://localhost:8081/product/",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",  
+                    success:function(data, textStatus, xhr){
+                        console.log("ok")
+                        
+                        if (data.length == 0){
+                            document.getElementById("products").innerHTML = "No products is found"
+                        }else{
+                            var inner_html = ''
+                            $.each(data,function(i,data){
+                                console.log(data.image)
+                                if( data.image == null){
+                                    var image_path = "http://localhost:8081/not_found.jpg"
+                                }else{
+                                    var image_path = `http://localhost:8081/${data.image}`
+                                }
+                                //<a href="="${image_path}" target="_blank">
+                                    inner_html += `<div class="col-md-4 border border-secondary">
+                                                <div class="thumbnail justify-content-center" align="center">
+                                                    <img src="${image_path}" alt="Lights" class = "img-fluid" style="height:200px; width:230px;">
+                                                    <div class="caption">
+                                                        <h5 class="card-title">${data.name}</h5>
+                                                        <p><b>Rating : </b>${stars(data.avgrating)}</p>
+                                                        <p>${data.description}</p>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary" id = "${data.productid}">Primary</button>
+                                                    </a>
+                                                </div>
+                                                </div>
+                            `
+                            
+                        })
+                        document.getElementById("products").innerHTML = inner_html
+                        }
+                        
+                    },
+                    error: function (xhr, textStatus, errorThrown){
+                        console.log("error in operation")
+                    }
+                });
+                
+
+                //listen to parent 
+                $products.on( "click","button", function(){
+                    window.location.assign(`http://localhost:3001/product.html?productid=${$(this).attr('id')}`);
+                } );
+
+                $productsearch.click(function(){
+                  var searchresult=$('#searchvalue').val();
+                  var searchtype = $('#searchtype').val();
+                  if (searchresult.length == 0){
+                    alert("no null inputs ");
+                    return
+                  }
+                  $.ajax({
+                    type:"GET",
+                    url:`http://localhost:8081/product/${searchtype}/${searchresult}`, 
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",  
+                    success:function(data, textStatus, xhr){
+                        console.log("ok")
+                        console.log(data)
+                        if (data.length == 0){
+                            document.getElementById("products").innerHTML = "No products is found"
+                        }else{
+                            console.log(data)
+                            var inner_html = ''
+                            $.each(data,function(i,data){
+
+
+
+                                if( data.image == null){
+                                    var image_path = "http://localhost:8081/not_found.jpg"
+                                }else{
+                                    var image_path = `http://localhost:8081/${data.image}`
+                                }
+
+
+
+                                //<a href="="${image_path}" target="_blank">
+                                    inner_html += `<div class="col-md-4 border border-secondary">
+                                                <div class="thumbnail justify-content-center" align="center">
+                                                    <img src="${image_path}" alt="Lights" class = "img-fluid" style="height:200px; width:230px;">
+                                                    <div class="caption">
+                                                        <h5 class="card-title">${data.name}</h5>
+                                                        <p><b>Rating : </b>${stars(data.avgrating)}</p>
+                                                        <p>${data.description}</p>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary" id = "${data.productid}">Primary</button>
+                                                    </a>
+                                                </div>
+                                                </div>
+                            `
+                            
+                        })
+                        document.getElementById("products").innerHTML = inner_html
+                        }
+                        
+                    },
+                    error: function (xhr, textStatus, errorThrown){
+                        console.log("error in operation")
+                    }
+                });
+                });
+
+        });
+    </script>
+</head>
+<div class="container">
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <a class="navbar-brand" href="http://localhost:3001/">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="http://localhost:3001/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+          </ul>
+          <select class="form-inline my-2 my-sm-0 mx-1" aria-label=".form-select-lg example" id = "searchtype" style="height:38px; border-radius: 5px;">
+            <option value="name" selected>Product Name</option>
+            <option value="brand">Product Brand</option>
+          </select>
+          <form class="form-inline my-2 my-lg-0" >
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" id = "searchvalue">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="button" id = "productsearch" >Search</button>
+          </form>
+        </div>
+      </nav>
+    
+</div>
+
+<body>
+    <h1 class = "text-center mt-5">All Products</h1>
+    <div class="container"><div class="row" id = "products"></div></div>
+    
+
+</body>
+</html>
